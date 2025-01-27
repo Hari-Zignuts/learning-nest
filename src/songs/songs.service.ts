@@ -4,14 +4,15 @@ import { CreateSongDTO } from './dto/create-song.dto';
 @Injectable()
 export class SongsService {
   findAll() {
+    throw new Error('Method not implemented.');
     return {
       message: 'This action returns all songs',
     };
   }
 
-  findOne(id: string) {
+  findOne(id: number) {
     return {
-      message: `This action returns a song #${id}`,
+      message: `This action returns a song #${typeof id}`,
     };
   }
 
@@ -22,9 +23,9 @@ export class SongsService {
     };
   }
 
-  update(id: string) {
+  update(id: number) {
     return {
-      message: `Song #${id} Updated Successfully!`,
+      message: `Song #${typeof id} Updated Successfully!`,
     };
   }
 
