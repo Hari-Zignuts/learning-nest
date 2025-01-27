@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { CreateSongDTO } from './dto/create-song.dto';
 
 @Injectable()
 export class SongsService {
@@ -14,9 +15,10 @@ export class SongsService {
     };
   }
 
-  create() {
+  create(createSongDTO: CreateSongDTO) {
     return {
       message: 'Song Created Successfully!',
+      data: createSongDTO,
     };
   }
 

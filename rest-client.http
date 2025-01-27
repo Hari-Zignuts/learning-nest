@@ -9,6 +9,14 @@ GET http://localhost:3000/songs/1
 
 ### CREATE NEW SONG REQUEST
 POST http://localhost:3000/songs
+Content-Type: application/json
+
+{
+  "title": "Song 1",
+  "artist": ["Artist 1", "Artist 2"],
+  "releaseDate": "2021-01-01",
+  "duration": "03:30"
+}
 
 ### UPDATE SONG REQUEST
 PUT http://localhost:3000/songs/1
