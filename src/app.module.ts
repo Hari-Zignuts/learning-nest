@@ -1,9 +1,4 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppService } from './app.service';
@@ -42,13 +37,13 @@ export class AppModule implements NestModule {
   // Middleware configuration
   configure(consumer: MiddlewareConsumer) {
     // Option - 1 // Apply middleware to a specific route in the songs module
-    consumer.apply(LoggerMiddleware).forRoutes({
-      path: 'songs',
-      method: RequestMethod.GET,
-    });
+    // consumer.apply(LoggerMiddleware).forRoutes({
+    //   path: 'songs',
+    //   method: RequestMethod.GET,
+    // });
 
     // Option - 2 // Apply middleware to all routes in the songs module
-    // consumer.apply(LoggerMiddleware).forRoutes('songs');
+    consumer.apply(LoggerMiddleware).forRoutes('/');
 
     // Option - 3 // Apply middleware to a specific route in the songs controller
     // consumer.apply(LoggerMiddleware).forRoutes(SongsController);
