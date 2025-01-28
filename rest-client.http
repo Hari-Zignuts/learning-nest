@@ -5,14 +5,14 @@ GET http://localhost:3000
 GET http://localhost:3000/songs
 
 ### FIND SONG REQUEST
-GET http://localhost:3000/songs/1
+GET http://localhost:3000/songs/5
 
 ### CREATE NEW SONG REQUEST
 POST http://localhost:3000/songs
 Content-Type: application/json
 
 {
-  "title": "You for Me 3",
+  "title": "You for Me 5",
   "artists": ["Siagla", "Yan", "Ny"],
   "releasedDate": "2022-09-30",
   "duration": "02:45",
@@ -20,7 +20,13 @@ Content-Type: application/json
 }
 
 ### UPDATE SONG REQUEST
-PUT http://localhost:3000/songs/1
+PUT http://localhost:3000/songs/6
+Content-Type: application/json
+
+{
+  "title": "You for Me 6"
+}
+
 
 ### DELETE SONG REQUEST
 DELETE http://localhost:3000/songs/1

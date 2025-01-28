@@ -2,21 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { CreateSongDTO } from './dto/create-song.dto';
 import { Song } from './entities/song.entity';
 import { SongRepository } from './repositories/song.repository';
+import { UpdateSongDTO } from './dto/update-song.dto';
 
 @Injectable()
 export class SongsService {
   constructor(private readonly songRepository: SongRepository) {}
 
-  findAll() {
-    throw new Error('Method not implemented.');
+  async findAll(): Promise<{ message: string; data: Song[] }> {
+    const data = await this.songRepository.findAllSongs();
     return {
       message: 'This action returns all songs',
+      data,
     };
   }
 
-  findOne(id: number) {
+  async findOne(id: number): Promise<{ message: string; data: Song }> {
+    const data = await this.songRepository.findOneSong(id);
     return {
       message: `This action returns a song #${typeof id}`,
+      data,
     };
   }
 
@@ -37,13 +41,18 @@ export class SongsService {
     };
   }
 
-  update(id: number) {
+  async update(
+    id: number,
+    updateSongDTO: UpdateSongDTO,
+  ): Promise<{ message: string }> {
+    await this.songRepository.updateSong(id, updateSongDTO);
     return {
-      message: `Song #${typeof id} Updated Successfully!`,
+      message: `Song #${id} Updated Successfully!`,
     };
   }
 
-  remove(id: string) {
+  async remove(id: number): Promise<{ message: string }> {
+    await this.songRepository.deleteSong(id);
     return {
       message: `Song #${id} Deleted Successfully!`,
     };
