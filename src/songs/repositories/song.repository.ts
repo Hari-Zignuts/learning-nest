@@ -3,6 +3,7 @@ import { Song } from '../entities/song.entity';
 import { Repository } from 'typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UpdateSongDTO } from '../dto/update-song.dto';
+import { PaginationMeta } from 'src/common/interfaces/pagination-meta.interface';
 
 @Injectable()
 export class SongRepository {
@@ -38,13 +39,7 @@ export class SongRepository {
     search: string,
   ): Promise<{
     items: Song[];
-    meta: {
-      totalItems: number;
-      itemCount: number;
-      itemsPerPage: number;
-      totalPages: number;
-      currentPage: number;
-    };
+    meta: PaginationMeta;
   }> {
     const queryBuilder = this.songRepository.createQueryBuilder('song');
     // Search filter

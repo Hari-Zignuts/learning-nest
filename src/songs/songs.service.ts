@@ -3,6 +3,7 @@ import { CreateSongDTO } from './dto/create-song.dto';
 import { Song } from './entities/song.entity';
 import { SongRepository } from './repositories/song.repository';
 import { UpdateSongDTO } from './dto/update-song.dto';
+import { PaginationMeta } from 'src/common/interfaces/pagination-meta.interface';
 
 @Injectable()
 export class SongsService {
@@ -17,13 +18,7 @@ export class SongsService {
     message: string;
     data: {
       items: Song[];
-      meta: {
-        totalItems: number;
-        itemCount: number;
-        itemsPerPage: number;
-        totalPages: number;
-        currentPage: number;
-      };
+      meta: PaginationMeta;
     };
   }> {
     // const data = await this.songRepository.findAllSongs();

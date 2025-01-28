@@ -14,6 +14,7 @@ import { SongsService } from './songs.service';
 import { CreateSongDTO } from './dto/create-song.dto';
 import { Song } from './entities/song.entity';
 import { UpdateSongDTO } from './dto/update-song.dto';
+import { PaginationMeta } from 'src/common/interfaces/pagination-meta.interface';
 
 @Controller('songs')
 export class SongsController {
@@ -28,13 +29,7 @@ export class SongsController {
     message: string;
     data: {
       items: Song[];
-      meta: {
-        totalItems: number;
-        itemCount: number;
-        itemsPerPage: number;
-        totalPages: number;
-        currentPage: number;
-      };
+      meta: PaginationMeta;
     };
   }> {
     // Convert optional parameters to defaults or required types
