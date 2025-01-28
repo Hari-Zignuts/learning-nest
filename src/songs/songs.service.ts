@@ -8,11 +8,37 @@ import { UpdateSongDTO } from './dto/update-song.dto';
 export class SongsService {
   constructor(private readonly songRepository: SongRepository) {}
 
-  async findAll(): Promise<{ message: string; data: Song[] }> {
-    const data = await this.songRepository.findAllSongs();
+  async findAll(
+    page: number,
+    limit: number,
+    sort: boolean,
+    search: string,
+  ): Promise<{
+    message: string;
+    data: {
+      items: Song[];
+      meta: {
+        totalItems: number;
+        itemCount: number;
+        itemsPerPage: number;
+        totalPages: number;
+        currentPage: number;
+      };
+    };
+  }> {
+    // const data = await this.songRepository.findAllSongs();
+    const { items, meta } = await this.songRepository.paginateAndFilter(
+      page,
+      limit,
+      sort,
+      search,
+    );
     return {
       message: 'This action returns all songs',
-      data,
+      data: {
+        items,
+        meta,
+      },
     };
   }
 

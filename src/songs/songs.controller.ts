@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { SongsService } from './songs.service';
 import { CreateSongDTO } from './dto/create-song.dto';
@@ -18,8 +19,30 @@ import { UpdateSongDTO } from './dto/update-song.dto';
 export class SongsController {
   constructor(readonly songsService: SongsService) {}
   @Get()
-  findAll(): Promise<{ message: string; data: Song[] }> {
-    return this.songsService.findAll();
+  findAll(
+    @Query('page') page?: string, // Optional, default will be handled
+    @Query('limit') limit?: string, // Optional, default will be handled
+    @Query('sort') sort?: string, // Optional, default will be handled
+    @Query('search') search: string = '', // Optional, default to empty string
+  ): Promise<{
+    message: string;
+    data: {
+      items: Song[];
+      meta: {
+        totalItems: number;
+        itemCount: number;
+        itemsPerPage: number;
+        totalPages: number;
+        currentPage: number;
+      };
+    };
+  }> {
+    // Convert optional parameters to defaults or required types
+    const pageNumber = page ? parseInt(page, 10) : 1;
+    const limitNumber = limit ? parseInt(limit, 10) : 2;
+    const sortBool = sort ? sort === 'true' : false;
+
+    return this.songsService.findAll(pageNumber, limitNumber, sortBool, search);
   }
 
   // default ParseIntPipe is used to parse the id parameter to a number (if it's not a number, it will throw an default error)

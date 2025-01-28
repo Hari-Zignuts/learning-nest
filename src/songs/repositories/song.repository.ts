@@ -31,6 +31,55 @@ export class SongRepository {
     return data;
   }
 
+  async paginateAndFilter(
+    page: number,
+    limit: number,
+    sort: boolean,
+    search: string,
+  ): Promise<{
+    items: Song[];
+    meta: {
+      totalItems: number;
+      itemCount: number;
+      itemsPerPage: number;
+      totalPages: number;
+      currentPage: number;
+    };
+  }> {
+    const queryBuilder = this.songRepository.createQueryBuilder('song');
+    // Search filter
+    if (search) {
+      queryBuilder.where('LOWER(song.title) LIKE LOWER(:search)', {
+        search: `%${search}%`,
+      });
+    }
+
+    // Sorting
+    if (sort) {
+      queryBuilder.orderBy('song.title', 'ASC'); // Example sorting by title (you can customize this)
+    }
+
+    // Pagination
+    queryBuilder.skip((page - 1) * limit).take(limit);
+
+    const [items, total] = await queryBuilder.getManyAndCount();
+    if (!items || !items.length) {
+      throw new HttpException('Songs not found', HttpStatus.NOT_FOUND, {
+        cause: 'No songs found',
+      });
+    }
+    return {
+      items,
+      meta: {
+        totalItems: total,
+        itemCount: items.length,
+        itemsPerPage: limit,
+        totalPages: Math.ceil(total / limit),
+        currentPage: page,
+      },
+    };
+  }
+
   async findOneSong(id: number): Promise<Song> {
     const data = await this.songRepository.findOneBy({ id });
     if (!data) {
