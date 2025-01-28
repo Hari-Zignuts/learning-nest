@@ -10,6 +10,7 @@ import { AppService } from './app.service';
 import { AppController } from './app.controller';
 import { SongsModule } from './songs/songs.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { Song } from './songs/entities/song.entity';
 
 // import { SongsController } from './songs/songs.controller';
 
@@ -23,7 +24,7 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
       username: 'postgres',
       password: 'ztlab138',
       database: 'spotify_clone',
-      entities: [],
+      entities: [Song],
       synchronize: true,
     }),
   ],
