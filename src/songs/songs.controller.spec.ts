@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SongsController } from './songs.controller';
 import { SongsService } from './songs.service';
 import { SongRepository } from './repositories/song.repository';
+import { ArtistRepository } from './repositories/artist.repository';
 
 describe('SongsController', () => {
   let controller: SongsController;
@@ -9,21 +10,17 @@ describe('SongsController', () => {
   let songRepository: SongRepository;
 
   beforeEach(async () => {
-    const mockSongRepository = {
-      find: jest.fn(),
-      findOne: jest.fn(),
-      create: jest.fn(),
-      save: jest.fn(),
-      remove: jest.fn(),
-    };
-
     const module: TestingModule = await Test.createTestingModule({
       controllers: [SongsController],
       providers: [
         SongsService,
         {
           provide: SongRepository,
-          useValue: mockSongRepository,
+          useValue: {},
+        },
+        {
+          provide: ArtistRepository,
+          useValue: {},
         },
       ],
     }).compile();
