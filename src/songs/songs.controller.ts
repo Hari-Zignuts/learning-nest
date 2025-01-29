@@ -64,7 +64,7 @@ export class SongsController {
     )
     id: number,
     @Body() updateSongDTO: UpdateSongDTO,
-  ): Promise<{ message: string }> {
+  ): Promise<{ message: string; data: Song }> {
     return this.songsService.update(id, updateSongDTO);
   }
 

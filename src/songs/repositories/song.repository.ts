@@ -2,14 +2,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Song } from '../entities/song.entity';
 import { Repository } from 'typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { UpdateSongDTO } from '../dto/update-song.dto';
 import { PaginationMeta } from 'src/common/interfaces/pagination-meta.interface';
+import { ArtistRepository } from './artist.repository';
 
 @Injectable()
 export class SongRepository {
   constructor(
     @InjectRepository(Song)
     private readonly songRepository: Repository<Song>,
+    private readonly artistRepository: ArtistRepository,
   ) {}
 
   async createSong(song: Song): Promise<Song> {
@@ -23,12 +24,14 @@ export class SongRepository {
   }
 
   async findAllSongs(): Promise<Song[]> {
-    const data = await this.songRepository.find();
-    if (!data) {
-      throw new HttpException('Songs not found', HttpStatus.NOT_FOUND, {
-        cause: 'No songs found',
-      });
+    const data = await this.songRepository.find({
+      relations: ['artists'],
+    });
+
+    if (!data || data.length === 0) {
+      throw new HttpException('Songs not found', HttpStatus.NOT_FOUND);
     }
+
     return data;
   }
 
@@ -57,6 +60,7 @@ export class SongRepository {
     // Pagination
     queryBuilder.skip((page - 1) * limit).take(limit);
 
+    queryBuilder.leftJoinAndSelect('song.artists', 'artists');
     const [items, total] = await queryBuilder.getManyAndCount();
     if (!items || !items.length) {
       throw new HttpException('Songs not found', HttpStatus.NOT_FOUND, {
@@ -76,7 +80,10 @@ export class SongRepository {
   }
 
   async findOneSong(id: number): Promise<Song> {
-    const data = await this.songRepository.findOneBy({ id });
+    const data = await this.songRepository.findOne({
+      where: { id },
+      relations: ['artists'],
+    });
     if (!data) {
       throw new HttpException(
         `Song not found with id:${id}`,
@@ -102,22 +109,13 @@ export class SongRepository {
     }
   }
 
-  async updateSong(id: number, song: UpdateSongDTO): Promise<void> {
-    if (!song || !Object.keys(song).length) {
-      throw new HttpException('No data provided', HttpStatus.BAD_REQUEST, {
-        cause: 'No data provided',
+  async updateSong(updateSong: Song): Promise<Song> {
+    const data = await this.songRepository.save(updateSong);
+    if (!data) {
+      throw new HttpException('Song not updated', HttpStatus.BAD_REQUEST, {
+        cause: 'Song not updated',
       });
     }
-
-    const data = await this.songRepository.update({ id }, song);
-    if (data.affected === 0) {
-      throw new HttpException(
-        `Song not found with id:${id}`,
-        HttpStatus.NOT_FOUND,
-        {
-          cause: 'Song not found',
-        },
-      );
-    }
+    return data;
   }
 }
