@@ -6,6 +6,8 @@ import { AppController } from './app.controller';
 import { SongsModule } from './songs/songs.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { Song } from './songs/entities/song.entity';
+import { User } from './songs/entities/user.entity';
+import { Artist } from './songs/entities/artist.entity';
 
 // import { SongsController } from './songs/songs.controller';
 
@@ -19,7 +21,7 @@ import { Song } from './songs/entities/song.entity';
       username: 'postgres',
       password: 'ztlab138',
       database: 'spotify_clone',
-      entities: [Song],
+      entities: [Song, Artist, User],
       synchronize: true,
     }),
   ],
