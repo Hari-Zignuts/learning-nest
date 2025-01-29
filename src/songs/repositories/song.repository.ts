@@ -67,15 +67,17 @@ export class SongRepository {
         cause: 'No songs found',
       });
     }
+    const meta: PaginationMeta = {
+      totalItems: total,
+      itemCount: items.length,
+      itemsPerPage: limit,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+    };
+
     return {
       items,
-      meta: {
-        totalItems: total,
-        itemCount: items.length,
-        itemsPerPage: limit,
-        totalPages: Math.ceil(total / limit),
-        currentPage: page,
-      },
+      meta,
     };
   }
 

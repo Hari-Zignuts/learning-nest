@@ -63,8 +63,6 @@ export class SongsService {
     song.releaseDate = createSongDTO.releasedDate;
     song.lyrics = createSongDTO.lyrics || '';
 
-    console.log(createSongDTO);
-
     const data = await this.songRepository.createSong(song);
     return {
       message: 'Song Created Successfully!',
@@ -81,18 +79,14 @@ export class SongsService {
         cause: 'No data provided',
       });
     }
-
     const updateSong = await this.songRepository.findOneSong(id);
     Object.assign(updateSong, updateSongDTO);
     if (updateSongDTO.artists) {
       const artists = await this.artistRepository.findArtistsByIds(
         updateSongDTO.artists,
       );
-      console.log(updateSong.artists);
       updateSong.artists = artists;
-      console.log(updateSong.artists);
     }
-    console.log(updateSong);
     const data = await this.songRepository.updateSong(updateSong);
     return {
       message: `Song #${id} Updated Successfully!`,
