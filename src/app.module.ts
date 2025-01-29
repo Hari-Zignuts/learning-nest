@@ -10,10 +10,13 @@ import { User } from './songs/entities/user.entity';
 import { Artist } from './songs/entities/artist.entity';
 
 // import { SongsController } from './songs/songs.controller';
+import { PlaylistsModule } from './playlists/playlists.module';
+import { PlayList } from './playlists/entities/playlist.entity';
 
 @Module({
   imports: [
     SongsModule,
+    PlaylistsModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -21,7 +24,7 @@ import { Artist } from './songs/entities/artist.entity';
       username: 'postgres',
       password: 'ztlab138',
       database: 'spotify_clone',
-      entities: [Song, Artist, User],
+      entities: [Song, Artist, User, PlayList],
       synchronize: true,
     }),
   ],
