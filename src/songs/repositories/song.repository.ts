@@ -1,17 +1,22 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Song } from '../entities/song.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PaginationMeta } from 'src/common/interfaces/pagination-meta.interface';
-import { ArtistRepository } from './artist.repository';
 
 @Injectable()
 export class SongRepository {
   constructor(
     @InjectRepository(Song)
     private readonly songRepository: Repository<Song>,
-    private readonly artistRepository: ArtistRepository,
   ) {}
+
+  async findSongsByIds(ids: number[]): Promise<Song[]> {
+    const songs = await this.songRepository.findBy({
+      id: In(ids),
+    });
+    return songs;
+  }
 
   async createSong(song: Song): Promise<Song> {
     const data = await this.songRepository.save(song);

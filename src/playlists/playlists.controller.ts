@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { PlaylistsService } from './playlists.service';
-import { CreatePlayListDTO } from './dto/create-playlist.dto';
+import { CreatePlayListDTO } from './dto/playlist.dto';
 
 @Controller('playlists')
 export class PlaylistsController {

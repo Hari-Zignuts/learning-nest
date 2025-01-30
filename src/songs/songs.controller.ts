@@ -11,10 +11,10 @@ import {
   Query,
 } from '@nestjs/common';
 import { SongsService } from './songs.service';
-import { CreateSongDTO } from './dto/create-song.dto';
 import { Song } from './entities/song.entity';
-import { UpdateSongDTO } from './dto/update-song.dto';
 import { PaginationMeta } from 'src/common/interfaces/pagination-meta.interface';
+import { CreateSongDTO } from './dto/create-song.dto';
+import { UpdateSongDTO } from './dto/update-song.dto';
 
 @Controller('songs')
 export class SongsController {

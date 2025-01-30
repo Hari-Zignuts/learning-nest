@@ -1,10 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateSongDTO } from './dto/create-song.dto';
+
 import { Song } from './entities/song.entity';
 import { SongRepository } from './repositories/song.repository';
-import { UpdateSongDTO } from './dto/update-song.dto';
+
 import { PaginationMeta } from 'src/common/interfaces/pagination-meta.interface';
-import { ArtistRepository } from './repositories/artist.repository';
+import { ArtistRepository } from 'src/artists/repositories/artist.repository';
+import { CreateSongDTO } from './dto/create-song.dto';
+import { UpdateSongDTO } from './dto/update-song.dto';
 
 @Injectable()
 export class SongsService {

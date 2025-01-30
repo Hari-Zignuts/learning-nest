@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Artist } from '../entities/artist.entity';
 import { In, Repository } from 'typeorm';
+import { Artist } from '../entities/artist.entity';
 
 @Injectable()
 export class ArtistRepository {

@@ -1,3 +1,6 @@
+import { Artist } from 'src/artists/entities/artist.entity';
+import { PlayList } from 'src/playlists/entities/playlist.entity';
+
 import {
   Column,
   Entity,
@@ -6,8 +9,6 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Artist } from './artist.entity';
-import { PlayList } from 'src/playlists/entities/playlist.entity';
 
 @Entity('songs')
 export class Song {
