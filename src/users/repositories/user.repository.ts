@@ -1,7 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from '../entities/user.entity';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CreateUserDTO } from '../dto/create-user.dto';
 
 @Injectable()
 export class UserRepository {
@@ -16,5 +17,30 @@ export class UserRepository {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     return user;
+  }
+
+  async createUser(
+    createUserDTO: CreateUserDTO,
+  ): Promise<Omit<User, 'password'>> {
+    try {
+      const newUser = await this.userRepository.save(createUserDTO);
+      if (!newUser) {
+        throw new HttpException('User not created', HttpStatus.BAD_REQUEST);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...result } = newUser;
+      return result;
+    } catch (error) {
+      if (
+        error instanceof QueryFailedError &&
+        error.message.includes('duplicate key value violates unique constraint')
+      ) {
+        throw new HttpException(
+          'Email already in use. Please choose another one.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      throw error;
+    }
   }
 }

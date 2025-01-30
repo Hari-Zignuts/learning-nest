@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Artist } from 'src/artists/entities/artist.entity';
 import { PlayList } from 'src/playlists/entities/playlist.entity';
 
@@ -20,10 +21,11 @@ export class User {
   @Column()
   lastName: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
+  @Exclude()
   password: string;
 
   @OneToOne(() => Artist, (artist) => artist.user)

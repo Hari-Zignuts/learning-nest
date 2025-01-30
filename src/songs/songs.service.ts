@@ -46,7 +46,7 @@ export class SongsService {
   async findOne(id: number): Promise<{ message: string; data: Song }> {
     const data = await this.songRepository.findOneSong(id);
     return {
-      message: `This action returns a song #${typeof id}`,
+      message: `This action returns a song #${id}`,
       data,
     };
   }
