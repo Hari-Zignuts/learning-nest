@@ -1,14 +1,17 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserRepository } from 'src/users/repositories/user.repository';
 import { LoginDTO } from './dto/login.dto';
-import { User } from 'src/users/entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  async login(loginDTO: LoginDTO): Promise<Omit<User, 'password'>> {
+  async login(loginDTO: LoginDTO): Promise<{ access_token: string }> {
     const user = await this.userRepository.findUserByEmail(loginDTO.email);
     const passwordMatched = await bcrypt.compare(
       loginDTO.password,
@@ -18,8 +21,8 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...result } = user;
-    return result;
+    const payload = { email: user.email, sub: user.id };
+    const access_token = this.jwtService.sign(payload);
+    return { access_token };
   }
 }
