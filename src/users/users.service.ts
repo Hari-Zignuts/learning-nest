@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { ResponseMessages } from 'src/common/constants/response-messages';
+import { PayloadType } from 'src/common/interfaces/payload.interface';
 
 @Injectable()
 export class UsersService {
@@ -68,5 +69,12 @@ export class UsersService {
     const user = await this.userRepository.findOneById(id);
     // retrun response
     return { message: ResponseMessages.USER.FETCHED_ONE(id), data: user };
+  }
+
+  getProfile(user: PayloadType): { message: string; data: PayloadType } {
+    return {
+      message: ResponseMessages.USER.FETCHED_ONE(user.userId),
+      data: user,
+    };
   }
 }

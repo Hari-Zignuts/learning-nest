@@ -9,12 +9,14 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { SongsService } from './songs.service';
 import { Song } from './entities/song.entity';
 import { PaginationMeta } from 'src/common/interfaces/pagination-meta.interface';
 import { CreateSongDTO } from './dto/create-song.dto';
 import { UpdateSongDTO } from './dto/update-song.dto';
+import { JwtArtistGuard } from './guards/jwt-artist.guard';
 
 @Controller('songs')
 export class SongsController {
@@ -28,6 +30,7 @@ export class SongsController {
    * @returns Promise<{ message: string; data: Song }>
    */
   @Post()
+  @UseGuards(JwtArtistGuard)
   create(
     @Body() createSongDTO: CreateSongDTO,
   ): Promise<{ message: string; data: Song }> {
