@@ -11,5 +11,6 @@ import { UsersModule } from 'src/users/users.module';
   imports: [TypeOrmModule.forFeature([PlayList]), SongsModule, UsersModule],
   controllers: [PlaylistsController],
   providers: [PlaylistsService, PlaylistRepository],
+  exports: [PlaylistsService],
 })
 export class PlaylistsModule {}

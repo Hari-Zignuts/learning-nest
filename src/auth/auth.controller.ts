@@ -13,8 +13,10 @@ export class AuthController {
   ) {}
 
   @Post('signup')
-  singup(@Body() userDTO: CreateUserDTO): Promise<Omit<User, 'password'>> {
-    return this.userService.create(userDTO);
+  singup(
+    @Body() createUserDTO: CreateUserDTO,
+  ): Promise<{ message: string; data: Omit<User, 'password'> }> {
+    return this.authService.signup(createUserDTO);
   }
 
   @Post('login')

@@ -19,45 +19,82 @@ import { UpdateSongDTO } from './dto/update-song.dto';
 @Controller('songs')
 export class SongsController {
   constructor(readonly songsService: SongsService) {}
+
+  /**
+   * @route POST /songs
+   * @function create
+   * @description Create a new song
+   * @param createSongDTO
+   * @returns Promise<{ message: string; data: Song }>
+   */
+  @Post()
+  create(
+    @Body() createSongDTO: CreateSongDTO,
+  ): Promise<{ message: string; data: Song }> {
+    // Call the service method to create a new song and return the response
+    return this.songsService.create(createSongDTO);
+  }
+
+  /**
+   * @route GET /songs
+   * @function findAll
+   * @description Find all songs in the database
+   * @param params { page: number, limit: number, sort: boolean, search: string } - optional query parameters
+   * @returns Promise<{ message: string; data: Song[] }>
+   */
   @Get()
   findAll(
-    @Query('page') page?: string, // Optional, default will be handled
-    @Query('limit') limit?: string, // Optional, default will be handled
-    @Query('sort') sort?: string, // Optional, default will be handled
-    @Query('search') search: string = '', // Optional, default to empty string
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('sort') sort?: string,
+    @Query('search') search: string = '',
   ): Promise<{
     message: string;
-    data: {
-      items: Song[];
-      meta: PaginationMeta;
-    };
+    data: { items: Song[]; meta: PaginationMeta };
   }> {
     // Convert optional parameters to defaults or required types
     const pageNumber = page ? parseInt(page, 10) : 1;
     const limitNumber = limit ? parseInt(limit, 10) : 2;
     const sortBool = sort ? sort === 'true' : false;
 
-    return this.songsService.findAll(pageNumber, limitNumber, sortBool, search);
+    // Call the service method to fetch songs and return the response
+    return this.songsService.findAllWithPaginationAndFilters(
+      pageNumber,
+      limitNumber,
+      sortBool,
+      search,
+    );
   }
 
-  // default ParseIntPipe is used to parse the id parameter to a number (if it's not a number, it will throw an default error)
+  /**
+   * @route GET /songs/:id
+   * @function findOneById
+   * @description Find a song by its ID
+   * @param id - parsed to a number using ParseIntPipe (if it's not a number, it will throw an error)
+   * @returns Promise<{ message: string; data: Song }>
+   */
   @Get(':id')
-  findOne(
-    @Param('id', ParseIntPipe) id: number,
+  findOneById(
+    @Param(
+      'id',
+      new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
+    )
+    id: number,
   ): Promise<{ message: string; data: Song }> {
-    return this.songsService.findOne(id);
+    // Call the service method to fetch a song by its ID and return the response
+    return this.songsService.findOneById(id);
   }
 
-  @Post()
-  create(
-    @Body() createSongDTO: CreateSongDTO,
-  ): Promise<{ message: string; data: Song }> {
-    return this.songsService.create(createSongDTO);
-  }
-
-  // custom ParseIntPipe is used to parse the id parameter to a number (if it's not a number, it will throw an custom error)
+  /**
+   * @route PUT /songs/:id
+   * @function updateOneById
+   * @description Update a song by its ID
+   * @param id - parsed to a number using ParseIntPipe (if it's not a number, it will throw an error)
+   * @param updateSongDTO
+   * @returns Promise<{ message: string; data: Song }>
+   */
   @Put(':id')
-  update(
+  updateOneById(
     @Param(
       'id',
       new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
@@ -65,11 +102,22 @@ export class SongsController {
     id: number,
     @Body() updateSongDTO: UpdateSongDTO,
   ): Promise<{ message: string; data: Song }> {
-    return this.songsService.update(id, updateSongDTO);
+    // Call the service method to update a song by its ID and return the response
+    return this.songsService.updateOneById(id, updateSongDTO);
   }
 
+  /**
+   * @route DELETE /songs/:id
+   * @function deleteOneById
+   * @description Delete a song by its ID
+   * @param id - parsed to a number using ParseIntPipe (if it's not a number, it will throw an error)
+   * @returns Promise<{ message: string }>
+   */
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number): Promise<{ message: string }> {
-    return this.songsService.remove(id);
+  deleteOneById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<{ message: string }> {
+    // Call the service method to delete a song by its ID and return the response
+    return this.songsService.deleteOneById(id);
   }
 }
