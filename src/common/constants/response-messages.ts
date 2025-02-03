@@ -34,6 +34,7 @@ export const ResponseMessages = {
       `Details of user #${id} retrieved successfully.`,
     UPDATED: (id: number) => `User #${id} has been updated successfully.`,
     DELETED: (id: number) => `User #${id} has been deleted successfully.`,
+    UPDATED_FAILED: 'Failed to update the user.',
     NOT_FOUND: 'The requested user was not found.',
     EMAIL_ALREADY_EXISTS: 'This email is already in use.',
     INVALID_CREDENTIALS: 'Invalid email or password.',
@@ -44,6 +45,8 @@ export const ResponseMessages = {
     LOGOUT_SUCCESS: 'Logout successful.',
     TOKEN_INVALID: 'Invalid token provided.',
     TOKEN_EXPIRED: 'Your session has expired. Please log in again.',
+    TWO_FA_ENABLED: 'Two-factor authentication has been enabled.',
+    TWO_FA_NOT_ENABLED: 'Two-factor authentication is not enabled.',
     ACCESS_DENIED: 'Access denied. You do not have the required permissions.',
   },
   GENERAL: {

@@ -28,6 +28,12 @@ export class User {
   @Exclude()
   password: string;
 
+  @Column({ nullable: true, type: 'text' })
+  twoFASecret: string;
+
+  @Column({ nullable: true, type: 'boolean', default: false })
+  twoFAEnabled: boolean;
+
   @OneToOne(() => Artist, (artist) => artist.user)
   artist: Artist;
 

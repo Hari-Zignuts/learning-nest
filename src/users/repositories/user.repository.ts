@@ -82,4 +82,15 @@ export class UserRepository {
     // return the user
     return user;
   }
+
+  async updateUser(user: User): Promise<User> {
+    const updatedUser = await this.userRepository.save(user);
+    if (!updatedUser) {
+      throw new HttpException(
+        ResponseMessages.USER.UPDATED_FAILED,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return updatedUser;
+  }
 }

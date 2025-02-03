@@ -77,4 +77,12 @@ export class UsersService {
       data: user,
     };
   }
+
+  async updateUser(user: User): Promise<{ message: string; data: User }> {
+    const updatedUser = await this.userRepository.updateUser(user);
+    return {
+      message: ResponseMessages.USER.UPDATED(user.id),
+      data: updatedUser,
+    };
+  }
 }

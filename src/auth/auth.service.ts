@@ -13,6 +13,8 @@ import { CreateUserDTO } from 'src/users/dto/create-user.dto';
 import { User } from 'src/users/entities/user.entity';
 import { PayloadType } from 'src/common/interfaces/payload.interface';
 import { ArtistsService } from 'src/artists/artists.service';
+import { Enable2FAType } from 'src/common/types/auth-types';
+import * as speakeasy from 'speakeasy';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +32,10 @@ export class AuthService {
    */
   async login(
     loginDTO: LoginDTO,
-  ): Promise<{ message: string; access_token: string }> {
+  ): Promise<
+    | { message: string; access_token: string }
+    | { validate2FA: string; message: string }
+  > {
     // Find the user by email address
     const user = await this.usersService.findOneByEmail(loginDTO.email);
     // Compare the password with the hashed password
@@ -48,6 +53,14 @@ export class AuthService {
       email: user.data.email,
       userId: user.data.id,
     };
+
+    if (user.data.twoFAEnabled && user.data.twoFASecret) {
+      return {
+        validate2FA: 'http://localhost:3000/auth/validate-2fa',
+        message:
+          'Please send the one-time password/token from your authenticator app',
+      };
+    }
     try {
       const artist = await this.artistsService.findOneByUserId(user.data.id);
       payload.artistId = artist.data.id;
@@ -78,5 +91,63 @@ export class AuthService {
   ): Promise<{ message: string; data: Omit<User, 'password'> }> {
     const user = await this.usersService.create(singupData);
     return { message: ResponseMessages.USER.CREATED, data: user.data };
+  }
+
+  async enable2FA(userId: number): Promise<Enable2FAType> {
+    const { data } = await this.usersService.findOneById(userId);
+    const user = data;
+    if (user.twoFAEnabled) {
+      return { secret: user.twoFASecret };
+    }
+    const secret = speakeasy.generateSecret();
+    user.twoFASecret = secret.base32;
+    user.twoFAEnabled = true;
+    const updateUser = await this.usersService.updateUser(user);
+    return { secret: updateUser.data.twoFASecret };
+  }
+
+  async disable2FA(userId: number): Promise<{ message: string }> {
+    const { data } = await this.usersService.findOneById(userId);
+    const user = data;
+    if (!user.twoFAEnabled) {
+      throw new HttpException(
+        ResponseMessages.AUTH.TWO_FA_NOT_ENABLED,
+        HttpStatus.FORBIDDEN,
+      );
+    }
+    user.twoFAEnabled = false;
+    user.twoFASecret = '';
+    await this.usersService.updateUser(user);
+    return { message: ResponseMessages.AUTH.TWO_FA_ENABLED };
+  }
+
+  async validate2FAToken(
+    userId: number,
+    token: string,
+  ): Promise<{ verified: boolean }> {
+    try {
+      const { data } = await this.usersService.findOneById(userId);
+      const user = data;
+      if (!user.twoFAEnabled) {
+        throw new HttpException(
+          ResponseMessages.AUTH.TWO_FA_NOT_ENABLED,
+          HttpStatus.FORBIDDEN,
+        );
+      }
+      const verified = speakeasy.totp.verify({
+        secret: user.twoFASecret,
+        encoding: 'base32',
+        token: token,
+      });
+
+      if (verified) {
+        return { verified: true };
+      } else {
+        return { verified: false };
+      }
+    } catch (err) {
+      console.log(err);
+      throw new HttpException('Error validating token', HttpStatus.FORBIDDEN);
+    }
   }
 }
