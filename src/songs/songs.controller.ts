@@ -16,7 +16,8 @@ import { Song } from './entities/song.entity';
 import { PaginationMeta } from 'src/common/interfaces/pagination-meta.interface';
 import { CreateSongDTO } from './dto/create-song.dto';
 import { UpdateSongDTO } from './dto/update-song.dto';
-import { JwtArtistGuard } from './guards/jwt-artist.guard';
+import { RoleBaseGuard } from './guards/jwt-artist.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('songs')
 export class SongsController {
@@ -30,7 +31,7 @@ export class SongsController {
    * @returns Promise<{ message: string; data: Song }>
    */
   @Post()
-  @UseGuards(JwtArtistGuard)
+  @UseGuards(JwtAuthGuard, RoleBaseGuard)
   create(
     @Body() createSongDTO: CreateSongDTO,
   ): Promise<{ message: string; data: Song }> {

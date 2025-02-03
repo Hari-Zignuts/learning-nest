@@ -81,4 +81,18 @@ export class ArtistRepository {
     // Return the artist
     return artist;
   }
+
+  async findOneByUserId(id: number): Promise<Artist> {
+    // Find an artist by their ID from the database
+    const artist = await this.artistRepository.findOneBy({ user: { id } });
+    // check if the artist exists
+    if (!artist || !artist.id) {
+      throw new HttpException(
+        ResponseMessages.ARTIST.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    // Return the artist
+    return artist;
+  }
 }

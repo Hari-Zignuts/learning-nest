@@ -49,7 +49,7 @@ export class AuthService {
       userId: user.data.id,
     };
     try {
-      const artist = await this.artistsService.findOneById(user.data.id);
+      const artist = await this.artistsService.findOneByUserId(user.data.id);
       payload.artistId = artist.data.id;
     } catch (error) {
       if (
@@ -60,6 +60,7 @@ export class AuthService {
       ) {
         throw error;
       }
+      console.log('this use is not an artist');
     }
     const access_token = this.jwtService.sign(payload);
     // Return the response

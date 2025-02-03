@@ -70,4 +70,16 @@ export class ArtistsService {
     // return response
     return { message: ResponseMessages.ARTIST.FETCHED_ONE(id), data: artist };
   }
+
+  async findOneByUserId(
+    userId: number,
+  ): Promise<{ message: string; data: Artist }> {
+    // Find an artist by their ID from the database
+    const artist = await this.artistRepository.findOneByUserId(userId);
+    // Return the artist
+    return {
+      message: ResponseMessages.ARTIST.FETCHED_ONE(userId),
+      data: artist,
+    };
+  }
 }
