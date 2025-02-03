@@ -18,35 +18,38 @@ import { CreateSongDTO } from './dto/create-song.dto';
 import { UpdateSongDTO } from './dto/update-song.dto';
 import { RoleBaseGuard } from './guards/jwt-artist.guard';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiQuery,
+  ApiParam,
+} from '@nestjs/swagger';
 
+@ApiTags('songs')
 @Controller('songs')
 export class SongsController {
   constructor(readonly songsService: SongsService) {}
 
-  /**
-   * @route POST /songs
-   * @function create
-   * @description Create a new song
-   * @param createSongDTO
-   * @returns Promise<{ message: string; data: Song }>
-   */
   @Post()
   @UseGuards(JwtAuthGuard, RoleBaseGuard)
+  @ApiOperation({ summary: 'Create a new song' })
+  @ApiResponse({ status: 201, description: 'Song created successfully.' })
+  @ApiBody({ type: CreateSongDTO })
   create(
     @Body() createSongDTO: CreateSongDTO,
   ): Promise<{ message: string; data: Song }> {
-    // Call the service method to create a new song and return the response
     return this.songsService.create(createSongDTO);
   }
 
-  /**
-   * @route GET /songs
-   * @function findAll
-   * @description Find all songs in the database
-   * @param params { page: number, limit: number, sort: boolean, search: string } - optional query parameters
-   * @returns Promise<{ message: string; data: Song[] }>
-   */
   @Get()
+  @ApiOperation({ summary: 'Find all songs' })
+  @ApiResponse({ status: 200, description: 'Songs retrieved successfully.' })
+  @ApiQuery({ name: 'page', required: false, type: String })
+  @ApiQuery({ name: 'limit', required: false, type: String })
+  @ApiQuery({ name: 'sort', required: false, type: String })
+  @ApiQuery({ name: 'search', required: false, type: String })
   findAll(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -56,12 +59,10 @@ export class SongsController {
     message: string;
     data: { items: Song[]; meta: PaginationMeta };
   }> {
-    // Convert optional parameters to defaults or required types
     const pageNumber = page ? parseInt(page, 10) : 1;
     const limitNumber = limit ? parseInt(limit, 10) : 2;
     const sortBool = sort ? sort === 'true' : false;
 
-    // Call the service method to fetch songs and return the response
     return this.songsService.findAllWithPaginationAndFilters(
       pageNumber,
       limitNumber,
@@ -70,14 +71,10 @@ export class SongsController {
     );
   }
 
-  /**
-   * @route GET /songs/:id
-   * @function findOneById
-   * @description Find a song by its ID
-   * @param id - parsed to a number using ParseIntPipe (if it's not a number, it will throw an error)
-   * @returns Promise<{ message: string; data: Song }>
-   */
   @Get(':id')
+  @ApiOperation({ summary: 'Find a song by its ID' })
+  @ApiResponse({ status: 200, description: 'Song retrieved successfully.' })
+  @ApiParam({ name: 'id', type: Number })
   findOneById(
     @Param(
       'id',
@@ -85,19 +82,15 @@ export class SongsController {
     )
     id: number,
   ): Promise<{ message: string; data: Song }> {
-    // Call the service method to fetch a song by its ID and return the response
     return this.songsService.findOneById(id);
   }
 
-  /**
-   * @route PUT /songs/:id
-   * @function updateOneById
-   * @description Update a song by its ID
-   * @param id - parsed to a number using ParseIntPipe (if it's not a number, it will throw an error)
-   * @param updateSongDTO
-   * @returns Promise<{ message: string; data: Song }>
-   */
   @Put(':id')
+  @UseGuards(JwtAuthGuard, RoleBaseGuard)
+  @ApiOperation({ summary: 'Update a song by its ID' })
+  @ApiResponse({ status: 200, description: 'Song updated successfully.' })
+  @ApiBody({ type: UpdateSongDTO })
+  @ApiParam({ name: 'id', type: Number })
   updateOneById(
     @Param(
       'id',
@@ -106,22 +99,16 @@ export class SongsController {
     id: number,
     @Body() updateSongDTO: UpdateSongDTO,
   ): Promise<{ message: string; data: Song }> {
-    // Call the service method to update a song by its ID and return the response
     return this.songsService.updateOneById(id, updateSongDTO);
   }
 
-  /**
-   * @route DELETE /songs/:id
-   * @function deleteOneById
-   * @description Delete a song by its ID
-   * @param id - parsed to a number using ParseIntPipe (if it's not a number, it will throw an error)
-   * @returns Promise<{ message: string }>
-   */
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a song by its ID' })
+  @ApiResponse({ status: 200, description: 'Song deleted successfully.' })
+  @ApiParam({ name: 'id', type: Number })
   deleteOneById(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<{ message: string }> {
-    // Call the service method to delete a song by its ID and return the response
     return this.songsService.deleteOneById(id);
   }
 }

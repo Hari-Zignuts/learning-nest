@@ -1,8 +1,17 @@
-import { Body, Controller, Get, ParseIntPipe, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDTO } from './dto/create-artist.dto';
 import { Artist } from './entities/artist.entity';
 
+@ApiTags('artists')
 @Controller('artists')
 export class ArtistsController {
   constructor(private readonly artistsService: ArtistsService) {}
@@ -14,9 +23,15 @@ export class ArtistsController {
    * @param id
    * @returns Promise<{ message: string; data: Artist }>
    */
+  @ApiOperation({ summary: 'Find an artist by their ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'The artist has been successfully found.',
+  })
+  @ApiResponse({ status: 404, description: 'Artist not found.' })
   @Get(':id')
   findOneById(
-    @Body('id', ParseIntPipe) id: number,
+    @Param('id', ParseIntPipe) id: number,
   ): Promise<{ message: string; data: Artist }> {
     // call the service method to find the artist by ID and return the response
     return this.artistsService.findOneById(id);
@@ -29,6 +44,14 @@ export class ArtistsController {
    * @param createArtistDTO
    * @returns Promise<{ message: string; data: Artist }>
    */
+  @ApiOperation({ summary: 'Create a new artist' })
+  @ApiBody({ type: CreateArtistDTO })
+  @ApiResponse({
+    status: 201,
+    description: 'The artist has been successfully created.',
+    type: Artist,
+  })
+  @ApiResponse({ status: 400, description: 'Invalid input.' })
   @Post()
   create(
     @Body() createArtistDTO: CreateArtistDTO,
