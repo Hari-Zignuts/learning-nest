@@ -9,8 +9,6 @@ export class RoleBaseGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<CustomRequest>();
     if (!request.user || !request.user.artistId) return false;
-    console.log(request.user.artistId);
-    console.log("heelelel")
     return (await this.artistsService.findOneById(request.user.artistId))
       ? true
       : false;

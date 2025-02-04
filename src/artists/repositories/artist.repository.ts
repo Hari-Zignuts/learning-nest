@@ -95,4 +95,11 @@ export class ArtistRepository {
     // Return the artist
     return artist;
   }
+
+  async findAll(): Promise<Artist[]> {
+    // Find all artists from the database
+    const artists = await this.artistRepository.find({});
+    // Return the artists
+    return artists;
+  }
 }

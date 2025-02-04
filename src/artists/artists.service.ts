@@ -82,4 +82,11 @@ export class ArtistsService {
       data: artist,
     };
   }
+
+  async findAll(): Promise<{ message: string; data: Artist[] }> {
+    // Find all artists from the database
+    const artists = await this.artistRepository.findAll();
+    // Return the artists
+    return { message: ResponseMessages.ARTIST.FETCHED, data: artists };
+  }
 }

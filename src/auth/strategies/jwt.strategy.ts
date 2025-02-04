@@ -13,7 +13,6 @@ export class JWTStrategy extends PassportStrategy(Strategy) {
       secretOrKey: authConstants.secret,
     });
   }
-
   validate(payload: PayloadType) {
     return {
       userId: payload.userId,

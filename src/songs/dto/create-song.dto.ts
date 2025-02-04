@@ -42,7 +42,7 @@ export class CreateSongDTO {
   @IsMilitaryTime()
   @ApiProperty({
     description: 'The duration of the song',
-    example: '00:03:54',
+    example: '03:54',
     type: String, // Define as string
     format: 'time', // Swagger time format
   })

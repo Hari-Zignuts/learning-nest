@@ -21,19 +21,20 @@ export class ArtistsController {
    * @function findOneById
    * @description Find an artist by their ID
    * @param id
+   * @param type
    * @returns Promise<{ message: string; data: Artist }>
    */
   @ApiOperation({ summary: 'Find an artist by their ID' })
   @ApiResponse({
     status: 200,
     description: 'The artist has been successfully found.',
+    type: Artist,
   })
   @ApiResponse({ status: 404, description: 'Artist not found.' })
   @Get(':id')
   findOneById(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<{ message: string; data: Artist }> {
-    // call the service method to find the artist by ID and return the response
     return this.artistsService.findOneById(id);
   }
 

@@ -25,6 +25,7 @@ import {
   ApiTags,
   ApiQuery,
   ApiParam,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 
 @ApiTags('songs')
@@ -34,6 +35,7 @@ export class SongsController {
 
   @Post()
   @UseGuards(JwtAuthGuard, RoleBaseGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new song' })
   @ApiResponse({ status: 201, description: 'Song created successfully.' })
   @ApiBody({ type: CreateSongDTO })
@@ -87,6 +89,7 @@ export class SongsController {
 
   @Put(':id')
   @UseGuards(JwtAuthGuard, RoleBaseGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a song by its ID' })
   @ApiResponse({ status: 200, description: 'Song updated successfully.' })
   @ApiBody({ type: UpdateSongDTO })
