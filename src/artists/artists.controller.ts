@@ -28,7 +28,6 @@ export class ArtistsController {
   @ApiResponse({
     status: 200,
     description: 'The artist has been successfully found.',
-    type: Artist,
   })
   @ApiResponse({ status: 404, description: 'Artist not found.' })
   @Get(':id')
@@ -50,7 +49,6 @@ export class ArtistsController {
   @ApiResponse({
     status: 201,
     description: 'The artist has been successfully created.',
-    type: Artist,
   })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
   @Post()

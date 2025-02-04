@@ -1,8 +1,10 @@
 import { Body, Controller, Post } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PlaylistsService } from './playlists.service';
 import { CreatePlayListDTO } from './dto/create-playlist.dto';
 import { PlayList } from './entities/playlist.entity';
 
+@ApiTags('playlists')
 @Controller('playlists')
 export class PlaylistsController {
   constructor(private playListService: PlaylistsService) {}
@@ -14,6 +16,13 @@ export class PlaylistsController {
    * @returns {Promise<{ message: string; data: PlayList }>}
    */
   @Post()
+  @ApiOperation({ summary: 'Create a new playlist' })
+  @ApiBody({ type: CreatePlayListDTO })
+  @ApiResponse({
+    status: 201,
+    description: 'The playlist has been successfully created.',
+  })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
   create(
     @Body() playlistDTO: CreatePlayListDTO,
   ): Promise<{ message: string; data: PlayList }> {
