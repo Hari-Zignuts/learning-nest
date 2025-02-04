@@ -7,7 +7,7 @@ import { envValidationSchema } from './env.validation';
   imports: [
     ConfigModule.forRoot({
       load: [configuration],
-      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
+      envFilePath: `${process.cwd()}/.env.${process.env.NODE_ENV || 'development'}`,
       isGlobal: true,
       validationSchema: envValidationSchema,
       validationOptions: {
